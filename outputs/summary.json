@@ -1,0 +1,276 @@
+{
+  "project": "智慧校园综合服务平台 v2.0",
+  "tasks": 42,
+  "roles": 10,
+  "cpm": 84.0,
+  "best_rule": "GRPW",
+  "best_makespan": 102.0,
+  "serial": {
+    "GRPW": 102.0,
+    "LFT": 102.0,
+    "LST": 102.0,
+    "MTS": 102.0,
+    "MSLK": 105.0,
+    "SRD": 106.0,
+    "SPT": 111.0,
+    "RANDOM": 114.0
+  },
+  "parallel": {
+    "GRPW": 102.0,
+    "LFT": 102.0,
+    "LST": 102.0,
+    "MSLK": 102.0,
+    "MTS": 102.0,
+    "SRD": 106.0,
+    "SPT": 107.0,
+    "RANDOM": 114.0
+  },
+  "improved": {
+    "GRPW": 102.0,
+    "LFT": 102.0,
+    "LST": 102.0,
+    "MSLK": 102.0,
+    "MTS": 102.0,
+    "SPT": 105.0,
+    "SRD": 106.0,
+    "RANDOM": 107.0
+  },
+  "conflict": [
+    {
+      "role_id": "ARCH",
+      "role_name": "系统架构师",
+      "capacity": 1,
+      "peak_demand": 2,
+      "conflict_days": 3,
+      "max_overload": 1,
+      "conflict_ratio": 0.0357,
+      "intensity": 2.0,
+      "has_conflict": true
+    },
+    {
+      "role_id": "BA",
+      "role_name": "需求/业务分析",
+      "capacity": 2,
+      "peak_demand": 2,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    },
+    {
+      "role_id": "BE",
+      "role_name": "后端开发",
+      "capacity": 4,
+      "peak_demand": 13,
+      "conflict_days": 8,
+      "max_overload": 9,
+      "conflict_ratio": 0.0952,
+      "intensity": 3.25,
+      "has_conflict": true
+    },
+    {
+      "role_id": "DBA",
+      "role_name": "数据库工程师",
+      "capacity": 2,
+      "peak_demand": 2,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    },
+    {
+      "role_id": "FE",
+      "role_name": "前端开发",
+      "capacity": 2,
+      "peak_demand": 7,
+      "conflict_days": 8,
+      "max_overload": 5,
+      "conflict_ratio": 0.0952,
+      "intensity": 3.5,
+      "has_conflict": true
+    },
+    {
+      "role_id": "OPS",
+      "role_name": "运维/DevOps",
+      "capacity": 2,
+      "peak_demand": 3,
+      "conflict_days": 3,
+      "max_overload": 1,
+      "conflict_ratio": 0.0357,
+      "intensity": 1.5,
+      "has_conflict": true
+    },
+    {
+      "role_id": "PM",
+      "role_name": "项目经理",
+      "capacity": 1,
+      "peak_demand": 1,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    },
+    {
+      "role_id": "QA",
+      "role_name": "测试工程师",
+      "capacity": 2,
+      "peak_demand": 2,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    },
+    {
+      "role_id": "SEC",
+      "role_name": "安全工程师",
+      "capacity": 2,
+      "peak_demand": 2,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    },
+    {
+      "role_id": "UI",
+      "role_name": "UI交互设计",
+      "capacity": 1,
+      "peak_demand": 1,
+      "conflict_days": 0,
+      "max_overload": 0,
+      "conflict_ratio": 0.0,
+      "intensity": 1.0,
+      "has_conflict": false
+    }
+  ],
+  "utilisation": [
+    {
+      "role_id": "ARCH",
+      "role_name": "系统架构师",
+      "capacity": 1,
+      "task_count": 6,
+      "busy_person_days": 18.0,
+      "capacity_person_days": 102.0,
+      "utilisation": 0.1765,
+      "peak_usage": 1,
+      "mean_usage": 0.176,
+      "idle_days": 84.0
+    },
+    {
+      "role_id": "BA",
+      "role_name": "需求/业务分析",
+      "capacity": 2,
+      "task_count": 7,
+      "busy_person_days": 44.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.2157,
+      "peak_usage": 2,
+      "mean_usage": 0.431,
+      "idle_days": 160.0
+    },
+    {
+      "role_id": "BE",
+      "role_name": "后端开发",
+      "capacity": 4,
+      "task_count": 14,
+      "busy_person_days": 122.0,
+      "capacity_person_days": 408.0,
+      "utilisation": 0.299,
+      "peak_usage": 4,
+      "mean_usage": 1.196,
+      "idle_days": 286.0
+    },
+    {
+      "role_id": "DBA",
+      "role_name": "数据库工程师",
+      "capacity": 2,
+      "task_count": 5,
+      "busy_person_days": 24.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.1176,
+      "peak_usage": 2,
+      "mean_usage": 0.235,
+      "idle_days": 180.0
+    },
+    {
+      "role_id": "FE",
+      "role_name": "前端开发",
+      "capacity": 2,
+      "task_count": 8,
+      "busy_person_days": 69.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.3382,
+      "peak_usage": 2,
+      "mean_usage": 0.676,
+      "idle_days": 135.0
+    },
+    {
+      "role_id": "OPS",
+      "role_name": "运维/DevOps",
+      "capacity": 2,
+      "task_count": 7,
+      "busy_person_days": 37.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.1814,
+      "peak_usage": 2,
+      "mean_usage": 0.363,
+      "idle_days": 167.0
+    },
+    {
+      "role_id": "PM",
+      "role_name": "项目经理",
+      "capacity": 1,
+      "task_count": 5,
+      "busy_person_days": 15.0,
+      "capacity_person_days": 102.0,
+      "utilisation": 0.1471,
+      "peak_usage": 1,
+      "mean_usage": 0.147,
+      "idle_days": 87.0
+    },
+    {
+      "role_id": "QA",
+      "role_name": "测试工程师",
+      "capacity": 2,
+      "task_count": 7,
+      "busy_person_days": 61.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.299,
+      "peak_usage": 2,
+      "mean_usage": 0.598,
+      "idle_days": 143.0
+    },
+    {
+      "role_id": "SEC",
+      "role_name": "安全工程师",
+      "capacity": 2,
+      "task_count": 4,
+      "busy_person_days": 24.0,
+      "capacity_person_days": 204.0,
+      "utilisation": 0.1176,
+      "peak_usage": 2,
+      "mean_usage": 0.235,
+      "idle_days": 180.0
+    },
+    {
+      "role_id": "UI",
+      "role_name": "UI交互设计",
+      "capacity": 1,
+      "task_count": 2,
+      "busy_person_days": 8.0,
+      "capacity_person_days": 102.0,
+      "utilisation": 0.0784,
+      "peak_usage": 1,
+      "mean_usage": 0.078,
+      "idle_days": 94.0
+    }
+  ],
+  "search": {
+    "best_makespan": 102.0,
+    "samples": 400
+  }
+}

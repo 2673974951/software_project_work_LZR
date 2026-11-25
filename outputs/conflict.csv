@@ -1,0 +1,11 @@
+﻿role_id,role_name,capacity,peak_demand,conflict_days,max_overload,conflict_ratio,intensity,has_conflict
+ARCH,系统架构师,1,2,3,1,0.0357,2.0,True
+BA,需求/业务分析,2,2,0,0,0.0,1.0,False
+BE,后端开发,4,13,8,9,0.0952,3.25,True
+DBA,数据库工程师,2,2,0,0,0.0,1.0,False
+FE,前端开发,2,7,8,5,0.0952,3.5,True
+OPS,运维/DevOps,2,3,3,1,0.0357,1.5,True
+PM,项目经理,1,1,0,0,0.0,1.0,False
+QA,测试工程师,2,2,0,0,0.0,1.0,False
+SEC,安全工程师,2,2,0,0,0.0,1.0,False
+UI,UI交互设计,1,1,0,0,0.0,1.0,False
