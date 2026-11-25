@@ -1,0 +1,11 @@
+role_id,role_name,capacity
+PM,项目经理,1
+BA,需求/业务分析,2
+ARCH,系统架构师,1
+DBA,数据库工程师,2
+UI,UI交互设计,1
+BE,后端开发,4
+FE,前端开发,2
+QA,测试工程师,2
+SEC,安全工程师,2
+OPS,运维/DevOps,2
