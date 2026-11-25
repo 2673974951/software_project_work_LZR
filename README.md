@@ -221,14 +221,20 @@ python scripts/build_report.py --toc toc.json
 
 ## 十、参考引用
 
-1. Pritsker A A B, Watters L J, Wolfe P M. Multiproject scheduling with limited resources. *Management Science*, 1969.
-2. Blazewicz J, Lenstra J K, Rinnooy Kan A H G. Scheduling subject to resource constraints. *Discrete Applied Mathematics*, 1983.
-3. Kolisch R. Serial and parallel resource-constrained project scheduling methods revisited. *EJOR*, 1996.
-4. Kolisch R, Sprecher A. PSPLIB — A project scheduling problem library. *EJOR*, 1997.
-5. Valls V, Ballestín F, Quintanilla S. Justification and RCPSP: A technique that pays. *EJOR*, 2005.
-6. Demeulemeester E L, Herroelen W S. *Project Scheduling: A Research Handbook*. Kluwer, 2002.
+近五年文献为主，另保留 4 篇方法源头文献（CPM、NP-hard 证明、SGS、FBI）：
 
-完整参考文献见报告第 8 节。
+1. Hartmann S, Briskorn D. An updated survey of variants and extensions of the RCPSP. *EJOR*, 2022, 297(1): 1-14.
+2. Pellerin R, Perrier N, Berthaut F. A survey of hybrid metaheuristics for the RCPSP. *EJOR*, 2020, 280(2): 395-416.
+3. Snauwaert J, Vanhoucke M. A classification and new benchmark instances for the multi-skilled RCPSP. *EJOR*, 2023, 307(1): 1-19.
+4. Đumić M, Jakobović D. Ensembles of priority rules for RCPSP. *Applied Soft Computing*, 2021, 110: 107606.
+5. Etminaniesfahani A, Gu H, Naeni L M, et al. A forward–backward relax-and-solve algorithm for the RCPSP. *SN Computer Science*, 2022, 4(2).
+6. Kolisch R. Serial and parallel resource-constrained project scheduling methods revisited. *EJOR*, 1996, 90(2): 320-333.
+7. Valls V, Ballestín F, Quintanilla S. Justification and RCPSP: A technique that pays. *EJOR*, 2005, 165(2): 375-386.
+8. Blazewicz J, Lenstra J K, Rinnooy Kan A H G. Scheduling subject to resource constraints. *Discrete Applied Mathematics*, 1983, 5(1): 11-24.
+9. Project Management Institute. *PMBOK Guide*. 7th ed. 2021.
+10. 韩万江, 姜立新. 软件项目管理[M]. 5版. 北京: 机械工业出版社, 2020.
+
+完整 16 篇参考文献见报告第 8 节。
 
 ---
 

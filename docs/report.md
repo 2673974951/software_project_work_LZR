@@ -36,7 +36,7 @@
 
 一个典型的中小型研发团队有 5 到 20 人，按角色划分成产品、架构、后端、前端、测试、运维几类。项目进行到开发阶段时，往往有七八个模块同时“具备开工条件”，而后端只有三四个人。此时的问题不再是“最长路径有多长”，而是**在人力上限与依赖关系的双重约束下，先做哪个、后做哪个，总工期才最短**。这就是资源受限项目调度（Resource-Constrained Project Scheduling Problem, RCPSP）。
 
-软件项目的 RCPSP 还有一个特殊性：任务不可分割。一个后端模块很难“今天做一半换别人做另一半”，也不适合被两个工程师同时写同一份代码（沟通成本会抵消并行收益，即 Brooks 定律）。因此 RCPSP 的“非抢占、资源需求恒定、工期固定”三条经典假设，在软件场景下反而是**贴切的**，这为把运筹学方法直接迁移到软件项目管理提供了依据。
+软件项目的 RCPSP 还有一个特殊性：任务不可分割。一个后端模块很难“今天做一半换别人做另一半”，也不适合被两个工程师同时写同一份代码（沟通成本会抵消并行收益，即 Brooks 定律[15]）。因此 RCPSP 的“非抢占、资源需求恒定、工期固定”三条经典假设，在软件场景下反而是**贴切的**，这为把运筹学方法直接迁移到软件项目管理提供了依据。
 
 ### 1.2 问题定义与研究任务
 
@@ -49,15 +49,15 @@
 
 ### 1.3 国内外研究现状
 
-**模型与复杂度。** RCPSP 的标准形式化由 Pritsker 等（1969）给出，其后被广泛采用。Blazewicz、Lenstra 与 Rinnooy Kan（1983）证明了该问题是强 NP-hard，即使只有单一资源、任务是单位工期，问题依然是 NP-hard 的。这意味着 30 个任务以上的实例基本不可能用精确算法在可接受时间内求解。
+**模型与复杂度。** RCPSP 的标准形式化可以追溯到 20 世纪 60 年代末，此后被广泛采用。经过半个多世纪的发展，其变体与扩展已形成庞大体系：Hartmann 与 Briskorn 的更新综述系统梳理了随机工期、多模式、多技能、多项目等上百种变体[5]。就计算复杂度而言，Blazewicz 等证明该问题是强 NP-hard[2]，这意味着 30 个任务以上的实例基本不可能用精确算法在可接受时间内求解。
 
-**精确算法与基准库。** Kolisch 与 Sprecher（1997）提出的分支定界方法在 PSPLIB 的 J30 实例集（30 个任务）上可以求得最优解，但对 J60 与 J120 则难以在合理时间内完成。PSPLIB 是由 Kolisch 与 Sprecher 建立的标准测试库，提供 30、60、90、120 个任务的多组实例及已知最优解或最好已知解，是评价启发式算法性能的通用基准。
+**精确算法与基准库。** 早期的分支定界方法可以在 PSPLIB 的 J30 实例集（30 个任务）上求得最优解，但对 J60 与 J120 则难以在合理时间内完成。PSPLIB 长期作为评价启发式算法性能的公共基准；针对近年兴起的多技能扩展形式，Snauwaert 与 Vanhoucke 重新做了问题分类并给出了新的基准实例集[7]，使"人不仅能干一种活"这一现实约束也能被标准化地评测。
 
-**启发式方法。** 工程实践的主流是“优先规则 + 调度生成机制”。Kolisch（1996）系统比较了串行与并行调度生成机制，指出串行 SGS 生成的调度一定是活动调度（active schedule），其解空间包含最优解，而并行 SGS 生成的只是非延迟调度（non-delay schedule），解空间是前者的子集。优先规则的经典综述见 Kolisch（1996）与 Demeulemeester 和 Herroelen（2002）的专著。
+**启发式方法。** 工程实践的主流是"优先规则 + 调度生成机制"。Kolisch 系统比较了串行与并行调度生成机制[3]，指出串行 SGS 生成的调度一定是活动调度（active schedule），其解空间包含最优解，而并行 SGS 生成的只是非延迟调度（non-delay schedule），解空间是前者的子集。
 
-**元启发式与改进技术。** 在优先规则之上，研究者发展了遗传算法、模拟退火、禁忌搜索、蚁群算法等方法。其中 Valls、Ballestín 与 Quintanilla（2005）提出的**前向—后向改进**（double justification）因其极低的计算成本而广受欢迎：它不改变解的结构，只通过“右对齐 + 左对齐”重新排列任务，常能把启发式解压缩 2% 到 8%。本文把这一技术作为“优化”环节的核心。
+**元启发式与改进技术。** 在优先规则之上，研究者发展了遗传算法、模拟退火、禁忌搜索、蚁群算法等方法。Pellerin 等对 300 余篇文献做了系统梳理，指出混合元启发式在该问题上的主流地位与实现要点[6]。近年一个值得注意的方向是把多条优先规则"集成"起来——Đumić 与 Jakobović 用进化方法自动组合基础规则，在 PSPLIB 上稳定优于任何单条规则[8]。与此同时，Valls 等提出的**前向—后向改进**（double justification）[4]因其极低的计算成本被沿用至今，并在 relax-and-solve 等新求解框架中继续承担"解的抛光"角色[9]。
 
-**软件项目场景的落地。** 国内软件工程管理教材（如韩万江等）在进度管理章节已引入资源平衡与资源平滑的概念，但多数停留在“手工调整甘特图”的层面，缺少可量化的调度模型。本文的定位是把标准 RCPSP 模型完整地落到一个软件项目案例上，并给出可复现的代码实现。
+**软件项目场景的落地。** 国内软件工程管理教材已引入资源平衡与资源平滑的概念，但多停留在"手工调整甘特图"的层面[13]；PMI 的 PMBOK 第 7 版把进度管理的落脚点从"活动清单"转向"可交付成果"[10]，《职业脉搏》2024 年度报告则指出人力资源调配与跨团队协同是当前项目交付最主要的压力来源[11]；国家标准 GB/T 8566—2022 规定了软件生存周期过程，为"阶段—活动"的划分提供了规范依据[12]。这些工作共同说明：进度管理的难点已经从"画出一条路径"转向"在有限人力下排出可行且可解释的顺序"。
 
 ### 1.4 研究内容与技术路线
 
@@ -94,7 +94,7 @@
 
 ### 2.2 复杂度与求解思路
 
-Blazewicz 等（1983）证明该问题是强 NP-hard。直观理解：若忽略资源约束，问题是多项式时间的 CPM；一旦加入资源约束，任务的排序问题就叠加上了“装箱”结构，组合爆炸。
+Blazewicz 等证明该问题是强 NP-hard[2]。直观理解：若忽略资源约束，问题是多项式时间的 CPM；一旦加入资源约束，任务的排序问题就叠加上了“装箱”结构，组合爆炸。
 
 三类求解思路：
 
@@ -355,7 +355,7 @@ WBS 采用“阶段—工作包”两级分解，共 7 个阶段、42 个工作�
 
 ### 4.5 前向—后向改进（FBI）
 
-这是本文的“优化”环节。Valls 等（2005）的方法可以概括为“右对齐—左对齐”的交替：
+这是本文的“优化”环节。Valls 等提出的方法[4]可以概括为“右对齐—左对齐”的交替：
 
     循环：
         1. 右对齐：保持总工期 T 不变，按开工时间从晚到早，
@@ -574,7 +574,7 @@ WBS 采用“阶段—工作包”两级分解，共 7 个阶段、42 个工作�
 | 随机键搜索（400 次 + FBI） | 102 | 0 | 不可解释，仅作参照 |
 | 最差规则（RANDOM） | 107 | +5 | 改进后仍有差距 |
 
-这一结果说明：**在本实例上，好的优先规则已经达到了随机搜索能找到的最好解，进一步优化的空间为 0。** 因此没有必要为本案例引入遗传算法等更昂贵的方法——这与 Kolisch（1996）的判断一致：在中大规模实例上，串行 SGS 配合合理的优先规则，其解质量与复杂元启发式相差不大，但计算成本低一到两个数量级。
+这一结果说明：**在本实例上，好的优先规则已经达到了随机搜索能找到的最好解，进一步优化的空间为 0。** 因此没有必要为本案例引入遗传算法等更昂贵的方法——这与 Kolisch 的判断一致[3]：在中大规模实例上，串行 SGS 配合合理的优先规则，其解质量与复杂元启发式相差不大，但计算成本低一到两个数量级。
 
 ---
 
@@ -618,7 +618,7 @@ SPT 是车间调度里最经典的规则之一，在单机或并行同质机环�
 
 RCPSP 模型在教科书中很干净，落到 20 人以下的团队会遇到五类现实约束：
 
-**局限一：任务不可分割的假设过于理想。** 现实中一个 9 天的模块可能被拆给两个人各做 4.5 天，但 RCPSP 不允许。若强行拆分，则要承担接口对齐与合并成本，工期未必真的减半（Brooks 定律）。
+**局限一：任务不可分割的假设过于理想。** 现实中一个 9 天的模块可能被拆给两个人各做 4.5 天，但 RCPSP 不允许。若强行拆分，则要承担接口对齐与合并成本，工期未必真的减半（Brooks 定律[15]）。
 
 **局限二：人是多角色的。** 本模型假定每个人只属于一个角色，实际中小团队里“后端兼运维”“测试兼产品”非常常见。这种“一专多能”会显著改变资源约束的结构，使模型给出的调度过于保守。
 
@@ -667,35 +667,37 @@ RCPSP 模型在教科书中很干净，落到 20 人以下的团队会遇到五�
 
 ## 参考文献
 
-[1] Pritsker A A B, Watters L J, Wolfe P M. Multiproject scheduling with limited resources: A zero-one programming approach[J]. Management Science, 1969, 16(1): 93-108.
+[1] Kelley J E, Walker M R. Critical-path planning and scheduling[C]// Papers presented at the December 1-3, 1959, Eastern Joint IRE-AIEE-ACM Computer Conference. Boston: ACM, 1959: 160-173.
 
 [2] Blazewicz J, Lenstra J K, Rinnooy Kan A H G. Scheduling subject to resource constraints: classification and complexity[J]. Discrete Applied Mathematics, 1983, 5(1): 11-24.
 
 [3] Kolisch R. Serial and parallel resource-constrained project scheduling methods revisited: Theory and computation[J]. European Journal of Operational Research, 1996, 90(2): 320-333.
 
-[4] Kolisch R, Sprecher A. PSPLIB — A project scheduling problem library[J]. European Journal of Operational Research, 1997, 96(1): 205-216.
+[4] Valls V, Ballestín F, Quintanilla S. Justification and RCPSP: A technique that pays[J]. European Journal of Operational Research, 2005, 165(2): 375-386.
 
-[5] Valls V, Ballestín F, Quintanilla S. Justification and RCPSP: A technique that pays[J]. European Journal of Operational Research, 2005, 165(2): 375-386.
+[5] Hartmann S, Briskorn D. An updated survey of variants and extensions of the resource-constrained project scheduling problem[J]. European Journal of Operational Research, 2022, 297(1): 1-14.
 
-[6] Demeulemeester E L, Herroelen W S. Project Scheduling: A Research Handbook[M]. Boston: Kluwer Academic Publishers, 2002.
+[6] Pellerin R, Perrier N, Berthaut F. A survey of hybrid metaheuristics for the resource-constrained project scheduling problem[J]. European Journal of Operational Research, 2020, 280(2): 395-416.
 
-[7] Kelley J E, Walker M R. Critical-path planning and scheduling[C]// Papers presented at the December 1-3, 1959, Eastern Joint IRE-AIEE-ACM Computer Conference. Boston: ACM, 1959: 160-173.
+[7] Snauwaert J, Vanhoucke M. A classification and new benchmark instances for the multi-skilled resource-constrained project scheduling problem[J]. European Journal of Operational Research, 2023, 307(1): 1-19.
 
-[8] Brooks F P. The Mythical Man-Month: Essays on Software Engineering[M]. Reading: Addison-Wesley, 1975.
+[8] Đumić M, Jakobović D. Ensembles of priority rules for resource constrained project scheduling problem[J]. Applied Soft Computing, 2021, 110: 107606.
 
-[9] Project Management Institute. A Guide to the Project Management Body of Knowledge (PMBOK Guide)[M]. 7th ed. Newtown Square: PMI, 2021.
+[9] Etminaniesfahani A, Gu H, Naeni L M, et al. A forward–backward relax-and-solve algorithm for the resource-constrained project scheduling problem[J]. SN Computer Science, 2022, 4(2).
 
-[10] Kerzner H. Project Management: A Systems Approach to Planning, Scheduling, and Controlling[M]. 12th ed. Hoboken: John Wiley & Sons, 2017.
+[10] Project Management Institute. A Guide to the Project Management Body of Knowledge (PMBOK Guide)[M]. 7th ed. Newtown Square: PMI, 2021.
 
-[11] Hartmann S, Briskorn D. A survey of variants and extensions of the resource-constrained project scheduling problem[J]. European Journal of Operational Research, 2010, 207(1): 1-14.
+[11] Project Management Institute. Pulse of the Profession 2024: The Future of Project Work[R]. Newtown Square: PMI, 2024.
 
-[12] 韩万江, 姜立新. 软件项目管理[M]. 5版. 北京: 机械工业出版社, 2020.
+[12] 全国信息技术标准化技术委员会. 系统与软件工程 软件生存周期过程: GB/T 8566—2022[S]. 北京: 中国标准出版社, 2022.
 
-[13] 中国信息通信研究院. 中国软件业运行情况报告[R]. 北京: 中国信息通信研究院, 2023.
+[13] 韩万江, 姜立新. 软件项目管理[M]. 5版. 北京: 机械工业出版社, 2020.
 
-[14] Standish Group. CHAOS Report 2020[R]. Boston: The Standish Group International, 2020.
+[14] 工业和信息化部. 2024年软件业经济运行情况[R]. 北京: 工业和信息化部, 2025.
 
----
+[15] Brooks F P. The Mythical Man-Month: Essays on Software Engineering[M]. Reading: Addison-Wesley, 1975.
+
+[16] Standish Group. CHAOS Report 2020[R]. Boston: The Standish Group International, 2020.
 
 ## 附录 A 代码结构与获取方式
 
