@@ -85,71 +85,70 @@ def _layers(project: Project) -> Dict[str, int]:
 
 
 def plot_network(project: Project, cpm: Optional[CPMResult] = None, name: str = "fig02_network"):
-    """时间坐标下的 AON 网络图（依赖关系 + 最早时间 + 总时差）.
+    """分层 AON 网络图（竖向排布，适配 A4 纵向版面）.
 
-    节点按 CPM 的**最早开始时间**放在横轴上，逐个任务分配"泳道"以避免重叠，
-    因此它同时表达了网络结构与时间位置：横轴即时间，节点长度即工期，箭头
-    即紧前关系，红色为关键路径。相比按拓扑层级排布的网络图，这种画法在任
-    务数较多时依然可读。
+    按"最长前驱链长度"给任务分层，同层任务横向排列，层从上到下推进；红色
+    为关键路径上的任务与依赖边。竖向排布的好处是：A4 纵向版面（正文宽
+    15.4cm）即可容纳 40 余个任务的网络图，无需横向页。
     """
     setup_style()
     cpm = cpm or compute_cpm(project)
-    n = len(cpm.task_ids)
-    T = cpm.project_duration
 
-    # 泳道分配：按最早开始时间排序，放入第一条空闲泳道
-    lane_end: List[float] = []
-    lane = np.zeros(n, dtype=int)
-    for i in sorted(range(n), key=lambda i: (cpm.es[i], i)):
-        for k, e in enumerate(lane_end):
-            if e <= cpm.es[i] + 1e-9:
-                lane[i] = k
-                lane_end[k] = cpm.ef[i]
-                break
-        else:
-            lane[i] = len(lane_end)
-            lane_end.append(cpm.ef[i])
-    n_lane = len(lane_end)
+    layer: Dict[str, int] = {}
+    for tid in project.order:
+        preds = project.tasks[tid].predecessors
+        layer[tid] = 0 if not preds else max(layer[p] for p in preds) + 1
 
-    fig, ax = plt.subplots(figsize=(9.0, 0.42 * n_lane + 1.4))
+    by_layer: Dict[int, List[str]] = {}
+    for tid in project.order:
+        by_layer.setdefault(layer[tid], []).append(tid)
+    pos: Dict[str, tuple] = {}
+    for lv, tids in by_layer.items():
+        tids.sort(key=lambda x: (cpm.es[cpm.task_ids.index(x)], x))
+        for k, tid in enumerate(tids):
+            pos[tid] = ((k - (len(tids) - 1) / 2.0), float(lv))
+
+    n_layers = max(layer.values()) + 1
+    max_nodes = max(len(v) for v in by_layer.values())
+    # 画布尺寸按"插入 A4 后文字约 6pt"反推：正文宽 15.4cm ≈ 6.0 英寸
+    W = max(5.2, max_nodes * 0.72)
+    H = max(4.0, n_layers * 0.55)
+
+    fig, ax = plt.subplots(figsize=(W, H))
+    bw, bh = 0.86, 0.56
     crit_edges = set(zip(cpm.critical_path[:-1], cpm.critical_path[1:]))
 
-    for i, tid in enumerate(cpm.task_ids):
+    for tid, (x, y) in pos.items():
         task = project.tasks[tid]
         is_crit = tid in cpm.critical_tasks
-        y = n_lane - 1 - lane[i]
-        ax.barh(y, task.duration, left=cpm.es[i], height=0.62,
-                color="#f2b8b8" if is_crit else "#c9d6e5",
-                edgecolor=ACCENT if is_crit else MAIN,
-                linewidth=1.3 if is_crit else 0.6, zorder=3)
-        ax.text(cpm.es[i] + task.duration / 2, y, tid, ha="center", va="center",
-                fontsize=5.6, fontweight="bold", zorder=4,
-                color=ACCENT if is_crit else MAIN)
+        ax.add_patch(plt.Rectangle((x - bw / 2, y - bh / 2), bw, bh,
+                                   facecolor="#fbe3e3" if is_crit else "#eef3fa",
+                                   edgecolor=ACCENT if is_crit else MAIN,
+                                   linewidth=1.4 if is_crit else 0.7, zorder=3))
+        # 纵轴已反转，y 更小的位置在屏幕上方
+        ax.text(x, y - 0.12, tid, ha="center", va="center", fontsize=6.6,
+                fontweight="bold", color=ACCENT if is_crit else MAIN, zorder=4)
+        label = task.name if len(task.name) <= 5 else task.name[:5]
+        ax.text(x, y + 0.11, label, ha="center", va="center", fontsize=5.6, zorder=4)
 
-    for i, tid in enumerate(cpm.task_ids):
-        y1 = n_lane - 1 - lane[i]
+    for tid in project.order:
         for s in project.successors[tid]:
-            j = cpm.task_ids.index(s)
-            y2 = n_lane - 1 - lane[j]
+            x1, y1 = pos[tid]
+            x2, y2 = pos[s]
             is_crit = (tid, s) in crit_edges
-            ax.annotate("", xy=(cpm.es[j], y2), xytext=(cpm.ef[i], y1),
-                        arrowprops=dict(arrowstyle="-|>", shrinkA=0, shrinkB=3,
-                                        lw=1.6 if is_crit else 0.55, mutation_scale=7,
+            ax.annotate("", xy=(x2, y2 - bh / 2 - 0.02), xytext=(x1, y1 + bh / 2 + 0.02),
+                        arrowprops=dict(arrowstyle="-|>", shrinkA=0, shrinkB=0,
+                                        lw=1.7 if is_crit else 0.55, mutation_scale=7,
                                         color=ACCENT if is_crit else "#9aa7b8",
-                                        alpha=1.0 if is_crit else 0.5,
-                                        connectionstyle="arc3,rad=0.15"), zorder=2)
+                                        alpha=1.0 if is_crit else 0.45,
+                                        connectionstyle="arc3,rad=0.12"), zorder=2)
 
-    ax.set_yticks([])
-    ax.set_xlim(-1, T + 3)
-    ax.set_ylim(-0.8, n_lane - 0.2)
-    ax.set_xlabel("时间（工作日）", fontsize=8)
-    ax.set_title("时间坐标下的 AON 网络图（%d 个任务、%d 条依赖；红色为关键路径）"
-                 % (n, sum(len(t.predecessors) for t in project.tasks.values())),
-                 fontsize=8.5, pad=8)
-    ax.grid(axis="x", alpha=0.3)
-    ax.text(0.995, 1.02, "无资源约束工期 %.0f 天；关键任务 %d 个"
-            % (T, len(cpm.critical_tasks)), transform=ax.transAxes,
-            ha="right", va="bottom", fontsize=6, color=GREY)
+    ax.set_xlim(-max_nodes / 2.0 - 0.2, max_nodes / 2.0 + 0.2)
+    ax.set_ylim(n_layers - 0.4, -0.6)
+    ax.axis("off")
+    ax.set_title("案例项目 AON 任务网络图（%d 个任务、%d 条依赖；红色为关键路径）"
+                 % (len(project), sum(len(t.predecessors) for t in project.tasks.values())),
+                 fontsize=9, pad=8)
     return savefig(fig, name)
 
 

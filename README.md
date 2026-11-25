@@ -123,7 +123,8 @@ software_project_work_LZR/
 │   └── cli.py                命令行入口
 ├── scripts/
 │   ├── run_experiment.py     一键复现实验与图表
-│   └── build_report.py       Markdown → Word 排版脚本
+│   ├── build_report.py       Markdown → Word 排版（目录、三线表、页码）
+│   └── pdf_text.py           从 PDF 提取文本，回填目录页码
 ├── tests/                    34 个单元测试
 ├── docs/
 │   ├── report.md             论文报告源文件（Markdown）
@@ -206,11 +207,16 @@ pytest tests -v
 | `report/*.docx` | Word 交付件（含封面、图表编号、参考文献） |
 | `report/*.pdf` | PDF 交付件 |
 
-重新生成 Word / PDF：
+重新生成 Word / PDF（目录页码需要"渲染一次再回填"，分两遍）：
 
 ```bash
-python scripts/build_report.py     # 生成 report/*.docx
-# 用 Word 或 LibreOffice 将 docx 另存为 pdf
+# 第 1 遍：生成 docx（目录常页码为空）
+python scripts/build_report.py
+#       用 Word / LibreOffice 把 docx 另存为 pdf
+# 第 2 遍：从 PDF 定位每个标题所在页，回填页码
+python scripts/pdf_text.py report/xxx.pdf toc.json --headings-from docs/report.md
+python scripts/build_report.py --toc toc.json
+#       再次另存为 pdf
 ```
 
 ## 十、参考引用
