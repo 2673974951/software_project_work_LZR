@@ -473,22 +473,23 @@ def build(toc_pages=None, out_name=None):
     for _ in range(5):
         doc.add_paragraph()
 
+    # (标签, 取值, 取值是否加下划线)
     info = [
-        ("课程名称", "软件工程管理"),
-        ("作业题目", "题目 3：资源受限下软件项目调度 RCPSP 的启发式算法优化"),
-        ("姓　　名", "李张荣"),
-        ("学　　号", "S260231047"),
-        ("专业班级", "Y262705"),
-        ("指导教师", "李琳"),
-        ("完成日期", "2026 年"),
+        ("课程名称", "软件工程管理", False),
+        ("作业题目", "题目 3：资源受限下软件项目调度 RCPSP 的启发式算法优化", False),
+        ("姓　　名", "李张荣", True),
+        ("学　　号", "S260231047", True),
+        ("专业班级", "Y262705", True),
+        ("指导教师", "李琳", True),
+        ("完成日期", "2026 年", True),
     ]
     table = doc.add_table(rows=len(info), cols=2)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
-    for i, (k, v) in enumerate(info):
+    for i, (k, v, underline) in enumerate(info):
         for j, val in enumerate((k + "：", v)):
             cell = table.cell(i, j)
-            cell.width = Cm(4.2 if j == 0 else 9.0)
+            cell.width = Cm(4.2 if j == 0 else 7.2)
             cell.text = ""
             par = cell.paragraphs[0]
             par.paragraph_format.first_line_indent = Pt(0)
@@ -496,7 +497,21 @@ def build(toc_pages=None, out_name=None):
             par.paragraph_format.space_after = Pt(3)
             par.alignment = (WD_ALIGN_PARAGRAPH.RIGHT if j == 0
                              else WD_ALIGN_PARAGRAPH.LEFT)
+            if j == 1:
+                # 与冒号留出一点间距，下划线从缩进处起画
+                par.paragraph_format.left_indent = Cm(0.25)
             set_run(par.add_run(val), size=BODY_PT, ea=HEI if j == 0 else SONG)
+            if j == 1 and underline:
+                # 与常见课程报告一致：填写的值下方画一条实线，形成"填空"效果
+                pPr = par._p.get_or_add_pPr()
+                pBdr = OxmlElement("w:pBdr")
+                bottom = OxmlElement("w:bottom")
+                bottom.set(qn("w:val"), "single")
+                bottom.set(qn("w:sz"), "6")
+                bottom.set(qn("w:space"), "1")
+                bottom.set(qn("w:color"), "000000")
+                pBdr.append(bottom)
+                pPr.append(pBdr)
 
     # ---------------- 目录（从第 1 页开始编号）
     toc_sec = doc.add_section(WD_SECTION.NEW_PAGE)
